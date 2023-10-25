@@ -3,6 +3,7 @@ import librosa
 import glob
 
 import read_with_plain_array
+import read_with_numpy
 
 
 def read(file):
@@ -12,9 +13,26 @@ def read(file):
     data, sample_rate = librosa.load(file)
     end_load_time = time.time()
     load_time = end_load_time - start_time
-    print("load_time: {:.2f} seconds".format(load_time))
+    print('load_time: {:.2f} seconds'.format(load_time))
 
+    print('### read_with_plain_array')
+    start_read_time = time.time()
     max_index = read_with_plain_array.arg_max(data)
+    end_read_time = time.time()
+    read_time = end_read_time - start_read_time
+    print('read_time: {:.2f} seconds'.format(read_time))
+
+    max_value = data[max_index]
+
+    print('max_value:', '{:.3f}'.format(max_value))
+    print('max_value time:', format_time(max_index / sample_rate))
+
+    print('### read_with_numpy')
+    start_read_time = time.time()
+    max_index = read_with_numpy.arg_max(data)
+    end_read_time = time.time()
+    read_time = end_read_time - start_read_time
+    print('read_time: {:.2f} seconds'.format(read_time))
 
     max_value = data[max_index]
 
@@ -23,7 +41,7 @@ def read(file):
 
     end_round_time = time.time()
     round_time = end_round_time - start_time
-    print("round_time: {:.2f} seconds".format(round_time))
+    print('round_time: {:.2f} seconds'.format(round_time))
 
 
 def format_time(seconds):
@@ -38,7 +56,7 @@ def main():
         read(file)
     end_time = time.time()
     total_time = end_time - start_time
-    print("total_time: {:.2f} seconds".format(total_time))
+    print('total_time: {:.2f} seconds'.format(total_time))
 
 
 # Press the green button in the gutter to run the script.

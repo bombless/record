@@ -2,6 +2,8 @@ import time
 import librosa
 import glob
 
+import read_with_plain_array
+
 
 def read(file):
 
@@ -12,15 +14,12 @@ def read(file):
     load_time = end_load_time - start_time
     print("load_time: {:.2f} seconds".format(load_time))
 
-    max_value = 0
-    max_count = None
+    max_index = read_with_plain_array.arg_max(data)
 
-    for idx, x in enumerate(data):
-        if max_value < abs(x):
-            max_value = abs(x)
-            max_count = idx
+    max_value = data[max_index]
+
     print('max_value:', '{:.3f}'.format(max_value))
-    print('max_value time:', format_time(max_count / sample_rate))
+    print('max_value time:', format_time(max_index / sample_rate))
 
     end_round_time = time.time()
     round_time = end_round_time - start_time

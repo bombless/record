@@ -49,11 +49,12 @@ def data(fr, sr, d):
 
 sample_rate = 4e3
 
+sleep_diff = []
 
 def play(sr):
     start_time = time.time()
     last_tick = time.time()
-    print('sr', sr)
+    # print('sr', sr)
     for line in twinkle_song.split('\n'):
         if not line:
             continue
@@ -65,16 +66,27 @@ def play(sr):
                 wave = data(numbers_to_tones[tone], sr, .6)
             curr_time = time.time()
             if curr_time - last_tick < .75:
+                print(f'plan to sleep {last_tick + .75 - curr_time:.5f} seconds')
+                sleep_start = time.time()
                 time.sleep(last_tick + .75 - curr_time)
-                print(f'sleep for {last_tick + .75 - curr_time:.2f}')
+                actually_sleep = time.time() - sleep_start
+                diff = last_tick + .75 - curr_time - actually_sleep
+                sleep_diff.append(diff)
+                print(f'actually {actually_sleep:.5f} seconds, diff {diff:.5f}')
+                # print(f'sleep for {last_tick + .75 - curr_time:.2f}')
+            else:
+                print('time passed!', f'{curr_time - last_tick - .75:.5f}')
+            last_tick = time.time()
             sd.play(wave, sr, blocking=True)
-    print()
     return time.time() - start_time
 
 
 if __name__ == '__main__':
-    for i in range(1, 5):
+    for i in range(1, 7):
+        # print('=' * 60)
         play_time = play(int(2 ** i * 1e3))
-        print(2 ** i * 1e3, 'play_time', play_time)
+        print(int(2 ** i * 1e3), 'play_time', play_time)
+    import numpy as np
+    print(f'mean diff {np.mean(np.array(sleep_diff)):.5f}')
 
 
